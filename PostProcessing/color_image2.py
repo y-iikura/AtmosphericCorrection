@@ -9,7 +9,7 @@ import cv2
 import sys
 
 fscene=os.getcwd()
-os.chdir('..')
+os.chdir('../Utility')
 cwd=os.getcwd()
 sys.path.append(cwd)
 import tcor_util as tc
