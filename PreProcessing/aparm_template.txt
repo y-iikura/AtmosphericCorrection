@@ -1,0 +1,19 @@
+/Volumes/HD-PCTU3/衛星オリジナルデータ/ETM+/ETM03052510732R
+sun position:
+  el =   63.1
+  az =   129.8
+number of bands:
+  nband =   6
+  BAND1 BAND2 BAND3 BAND4 BAND5 BAND7
+calibration:
+  offset =   -6.2  -6.4  -5.0  -5.1  -1.0  -0.35  
+  gain =   0.776  0.796  0.619  0.965  0.126  0.044  
+median filter for ref & tau:
+  wsize =   41   121
+initial ref:
+  penv  =   0.06 0.10 0.06
+initial depth:
+  depth =   0.55
+iteration condition:
+  dec =     0.2
+  twid = 0.4 0.32 0.24 0.18 0.12 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1

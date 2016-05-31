@@ -1,0 +1,14 @@
+  0                            (User Condition)
+  26.9 129.8   0.0   0.0  5 25 (Sun-Target Sensor Geometry)
+  2                            (Mid Latitude Summer)
+  2                            (AEROSOLS MODEL : Maritime)
+  0                            (Optical thickness at 550nm )
+  0.0                          
+  -0.0                         (TARGET ALTITUDE IN KM)
+  -1000                        (SATELLITE CASE)
+  138                          (Landsat ETM+ Band 1)
+  0                            (HOMOGENEOUS CASE)
+  0                            (no DIRECTIONNAL EFFECTS)
+  0                            (Reflectance)
+  0.3                        
+  -1                           (No Atmospheric correction)
