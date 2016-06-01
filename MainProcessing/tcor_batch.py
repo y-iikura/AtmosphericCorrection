@@ -110,7 +110,7 @@ for band in [1,2,3]:
     np.save('cls'+str(band)+str(iter),cls)
   if itmax > m :
     np.save('tau'+str(band)+'x',taux)
-    np.save('eref'+str(band)+'x',ref)
+    np.save('ref'+str(band)+'x',ref)
   os.chdir('../DATA')
 
 exit()
