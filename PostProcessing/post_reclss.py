@@ -49,13 +49,13 @@ wsize=tc.read_parm(text,'wsize',2)
 wsize=[int(x) for x in wsize]
 dec=tc.read_parm(text,'dec',1)[0]
 twid=tc.read_parm(text,'twid',15)
-#cls_name=text[-1][:-1]
+cls_name=text[-1][:-1]
 fun_name=text[-2][:-1]
 ut.r_set0=float(text[-3][:-1])
 ntau,nhigh,nsang=text[-4].split()
 ut.t_set=np.arange(int(ntau))*0.2
 
-#print cls_name
+print cls_name
 print fun_name
 print ut.r_set0
 print ut.t_set
@@ -82,33 +82,45 @@ for band in [1,2,3]:
   ut.cosb0=np.cos((90.0-el)*np.pi/180); ut.cosb0
   print "--- function list ---"
   f_list=np.load(fun_name+'_'+str(band)+'.npy')
-  #cls=np.load(cls_name+'.npy')
+  cls=np.load(cls_name+'.npy')
   os.chdir('../'+fold)
-  tau=np.load('tau'+str(band)+str(nstr-1)+'.npy')
-  eref=np.load('ref'+str(band)+str(nstr-1)+'.npy')
-  ref=np.load('ref'+str(band)+'x.npy')
-  cls=tc.mclass(256*inc,128*slp,256*256*ref,nmax)
-
+  tau=depth*np.ones(tc.imax*tc.jmax).reshape(tc.jmax,tc.imax)
+  eref=penv[0]*np.ones(tc.imax*tc.jmax).reshape(tc.jmax,tc.imax)
+  for n in range(nstr):
+    print "--- "+str(n)+ " iteration ---"
+    t_ref=np.load('ref'+str(band)+str(n)+'.npy')
+    temp=np.where(t_ref==1.0)
+    cls[temp]=-1
+    eref=(1.0-dec)*eref+dec*tc.xmedian(t_ref,wsize[0])
+    t_taux=np.load('tau'+str(band)+str(n)+'.npy')
+    temp=np.where(t_taux==1.8)
+    cls[temp]=-1
+    tau=(1.0-dec)*tau+dec*tc.ymedian(t_taux,cls,wsize[1],twid[n])
+    temp=np.where(cls==-1)
+    print 100.0*len(temp[0])/float(tc.imax*tc.jmax)
+  cls=tc.mclass(256*inc,128*slp,256*256*t_ref,nmax)
   iters=np.arange(nend-nstr)+nstr
   for iter in iters:
     print "--- "+str(iter)+ " iteration ---"
     print " > reflectance "
     ref=ut.mk_ref(tc.jmax,tc.imax,f_list,tau,eref)
+    temp=np.where(ref==1.0)
+    cls[temp]=-1
     if model == 'M' : cref=tc.aestm(ref,cls)
     elif model == 'P' : cref=tc.aesth(ref,20,cls)
     else : cref=tc.aest(ref,cls)
     print " > aerosol "
-    taux=ut.mk_tau(tc.jmax,tc.imax,f_list,eref,cref)
-    print " > median filter "
     eref=(1.0-dec)*eref+dec*tc.xmedian(ref,wsize[0])
+    taux=ut.mk_tau(tc.jmax,tc.imax,f_list,eref,cref)
+    temp=np.where(taux==1.8)
+    cls[temp]=-1
+    print " > median filter "
     tau=(1.0-dec)*tau+dec*tc.ymedian(taux,cls,wsize[1],twid[iter])
     temp=np.where(cls==-1) ; print 100.0*len(temp[0])/float(tc.imax*tc.jmax)
-    np.save('tau'+str(band)+str(iter),tau)
-    np.save('ref'+str(band)+str(iter),eref)
-    np.save('cls'+str(band)+str(iter),cls)
- 
-  np.save('tau'+str(band)+'y',taux)
-  np.save('ref'+str(band)+'y',ref)
+    np.save('tau'+str(band)+str(iter)+'x',taux)
+    np.save('ref'+str(band)+str(iter)+'x',ref)
+    #temp=np.where(cls == -1)
+    #np.save('cls'+str(band)+str(iter)+'x',temp)
   os.chdir('../DATA')
 
 exit()

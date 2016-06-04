@@ -66,6 +66,7 @@ os.chdir('DATA')
 #------------------------------
 #    Main Processing
 #------------------------------
+#for band in [1]:
 for band in [1,2,3]:
   print "#### Processing of Band"+str(band)+" ####"
   ut.cosb0=np.cos((90.0-el)*np.pi/180); ut.cosb0
@@ -74,17 +75,24 @@ for band in [1,2,3]:
   cls=np.load(cls_name+'.npy')
   tc.jmax,tc.imax=cls.shape
   os.chdir('../'+fold)
-  temp=[x for x in os.listdir('.') if x.find('cls'+str(band))==0]
+  temp=[x for x in os.listdir('.') if x.find('ref'+str(band))==0]
   m=len(temp)
-  if m == 0 :
-    tau=depth*np.ones(tc.imax*tc.jmax).reshape(tc.jmax,tc.imax)
-    eref=penv[0]*np.ones(tc.imax*tc.jmax).reshape(tc.jmax,tc.imax)
-    iters=range(itmax)
-  else:
-    tau=np.load('tau'+str(band)+str(m-1)+'.npy')
-    eref=np.load('ref'+str(band)+str(m-1)+'.npy')
-    cls=np.load('cls'+str(band)+str(m-1)+'.npy')
-    iters=np.arange(itmax-m)+m
+  tau=depth*np.ones(tc.imax*tc.jmax).reshape(tc.jmax,tc.imax)
+  eref=penv[0]*np.ones(tc.imax*tc.jmax).reshape(tc.jmax,tc.imax)
+  if m != 0 :
+    for n in range(m):
+      print "--- "+str(n)+ " iteration ---"
+      t_ref=np.load('ref'+str(band)+str(n)+'.npy')
+      temp=np.where(t_ref==1.0)
+      cls[temp]=-1
+      eref=(1.0-dec)*eref+dec*tc.xmedian(t_ref,wsize[0])
+      t_taux=np.load('tau'+str(band)+str(n)+'.npy')
+      temp=np.where(t_taux==1.8)
+      cls[temp]=-1
+      tau=(1.0-dec)*tau+dec*tc.ymedian(t_taux,cls,wsize[1],twid[n])
+      temp=np.where(cls==-1)
+      print 100.0*len(temp[0])/float(tc.imax*tc.jmax)
+  iters=np.arange(itmax-m)+m
   for iter in iters:
     print "--- "+str(iter)+ " iteration ---"
     print " > reflectance "
@@ -98,19 +106,17 @@ for band in [1,2,3]:
       elif model == 'P' : cref=tc.aesth(ref,20,cls)
       else : cref=tc.aest(ref,cls)
     print " > aerosol "
+    eref=(1.0-dec)*eref+dec*tc.xmedian(ref,wsize[0])
     taux=ut.mk_tau(tc.jmax,tc.imax,f_list,eref,cref)
     temp=np.where(taux==1.8)
     cls[temp]=-1
     print " > median filter "
-    eref=(1.0-dec)*eref+dec*tc.xmedian(ref,wsize[0])
     tau=(1.0-dec)*tau+dec*tc.ymedian(taux,cls,wsize[1],twid[iter])
     temp=np.where(cls==-1) ; print 100.0*len(temp[0])/float(tc.imax*tc.jmax)
-    np.save('tau'+str(band)+str(iter),tau)
-    np.save('ref'+str(band)+str(iter),eref)
-    np.save('cls'+str(band)+str(iter),cls)
-  if itmax > m :
-    np.save('tau'+str(band)+'x',taux)
-    np.save('ref'+str(band)+'x',ref)
+    np.save('tau'+str(band)+str(iter),taux)
+    np.save('ref'+str(band)+str(iter),ref)
+    #temp=np.where(cls == -1)
+    #np.save('cls'+str(band)+str(iter),temp)
   os.chdir('../DATA')
 
 exit()

@@ -16,7 +16,8 @@ import tcor_util as tc
 os.chdir(fscene)
 
 fold=sys.argv[1]
-tmax=float(sys.argv[2])
+num=sys.argv[2]
+tmax=float(sys.argv[3])
 print fold,tmax
 
 dem=cv2.imread('DATA/dem.tif',-1)/1000.0
@@ -27,9 +28,9 @@ imax=tc.imax/2; jmax=tc.jmax/2
 #pwd
 os.chdir(fold)
 
-tm1=np.load('tau1y'+'.npy')
-tm2=np.load('tau2y'+'.npy')
-tm3=np.load('tau3y'+'.npy')
+tm1=np.load('tau1'+num+'x.npy')
+tm2=np.load('tau2'+num+'x.npy')
+tm3=np.load('tau3'+num+'x.npy')
 tm1=tc.hcor(tm1,dem,2.0)
 tm2=tc.hcor(tm2,dem,2.0)
 tm3=tc.hcor(tm3,dem,2.0)
