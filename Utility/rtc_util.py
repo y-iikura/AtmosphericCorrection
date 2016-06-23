@@ -149,3 +149,43 @@ def mk_tau(jmax,imax,f_list,eref,cref):
     print np.nanmean(taux),np.nanstd(taux),len(temp[0])
     return taux
 
+#5/25/2016
+def radiance(ref,cosb,t_setx,height,r_setx,sang):
+    if isinstance(t_setx,(int,float)): ttmp=[t_setx/dtau]
+    else: ttmp=t_setx/dtau
+    if isinstance(height,(int,float)): htmp=[height/dheight]
+    else: htmp=height/dheight
+    if isinstance(sang,(int,float)): stmp=[sang-smin]
+    else: stmp=sang-smin
+    path=ndimage.map_coordinates(path_rad,[ttmp,htmp,stmp])
+    back=ndimage.map_coordinates(back_rad,[ttmp,htmp,stmp])
+    pixel=ndimage.map_coordinates(pixel_rad,[ttmp,htmp,stmp])
+    dir=ndimage.map_coordinates(dir_irad,[ttmp,htmp,stmp])
+    sky=ndimage.map_coordinates(sky_irad,[ttmp,htmp,stmp])
+    env=ndimage.map_coordinates(env_irad,[ttmp,htmp,stmp])
+    sph=ndimage.map_coordinates(sph_alb,[ttmp,htmp,stmp])
+    rayl=ndimage.map_coordinates(tau_rayl,[ttmp,htmp,stmp])
+    aero=ndimage.map_coordinates(tau_aero,[ttmp,htmp,stmp])
+    minor=ndimage.map_coordinates(tau_minor,[ttmp,htmp,stmp])
+    dir=dir*cosb/cosb0
+    #print dir
+    back=back*(1-r_set0*sph)*r_setx/(1-r_setx*sph)/r_set0
+    #print back
+    env=env*(1-r_set0*sph)*r_setx/(1-r_setx*sph)/r_set0
+    odep=rayl+aero+minor
+    S=np.cos(np.pi*sang/180)
+    rad=path+back+ref*(dir+sky+env)/np.exp(odep/S)/np.pi
+    return rad
+    #return np.pi*(rad-path-back)/(dir+sky+env)*np.exp(odep/S)
+
+#5/25/2016
+def mk_rad(jmax,imax,inc,dem,sang,tau,ref,eref):
+    rad=np.zeros(imax*jmax).reshape(jmax,imax)
+    #t=cv2.getTickCount() 
+    for j in range(jmax):
+      rad[j,:] = radiance(ref[j,:],inc[j,:],tau[j,:],dem[j,:]/1000,eref[j,:],sang[j,:])
+      #if j % 100 == 0: print j,(cv2.getTickCount()-t)/cv2.getTickFrequency()
+    print np.mean(rad),np.std(rad)
+    return rad
+
+
