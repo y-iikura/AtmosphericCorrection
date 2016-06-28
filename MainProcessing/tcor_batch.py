@@ -44,7 +44,10 @@ az=tc.read_parm(text,'az',1)[0]
 nband=int(tc.read_parm(text,'nband',1)[0])
 offset=tc.read_parm(text,'offset',nband)
 gain=tc.read_parm(text,'gain',nband)
-penv=tc.read_parm(text,'penv',3)
+if fscene.find('OLI')==-1: 
+  penv=tc.read_parm(text,'penv',3)
+else:
+  penv=tc.read_parm(text,'penv',4) 
 depth=tc.read_parm(text,'depth',1)[0]
 wsize=tc.read_parm(text,'wsize',2)
 wsize=[int(x) for x in wsize]
@@ -67,7 +70,11 @@ os.chdir('DATA')
 #    Main Processing
 #------------------------------
 #for band in [1]:
-for band in [1,2,3]:
+if fscene.find('OLI') == -1:
+  b_list=[1,2,3]
+else:
+  b_list=[1,2,3,4]
+for band in b_list:
   print "#### Processing of Band"+str(band)+" ####"
   ut.cosb0=np.cos((90.0-el)*np.pi/180); ut.cosb0
   print "--- function list ---"
@@ -78,7 +85,7 @@ for band in [1,2,3]:
   temp=[x for x in os.listdir('.') if x.find('ref'+str(band))==0]
   m=len(temp)
   tau=depth*np.ones(tc.imax*tc.jmax).reshape(tc.jmax,tc.imax)
-  eref=penv[0]*np.ones(tc.imax*tc.jmax).reshape(tc.jmax,tc.imax)
+  eref=penv[band-1]*np.ones(tc.imax*tc.jmax).reshape(tc.jmax,tc.imax)
   if m != 0 :
     for n in range(m):
       print "--- "+str(n)+ " iteration ---"

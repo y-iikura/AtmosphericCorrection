@@ -31,6 +31,7 @@ subf,tdec=fold.split('_')
 depth=float(subf[3:5])/100
 nmax=int(subf[6:])
 itmax=int(sys.argv[2])
+itmax2=int(sys.argv[3])
 dec=float(tdec)/10.0
 model=subf[5]
 print 'depth:',depth
@@ -70,6 +71,7 @@ os.chdir('DATA')
 #------------------------------
 # dem input and calc inc
 dem=cv2.imread('dem.tif',-1)
+dem[dem < 0.0]=0.0
 #dem=tc.read_tif(fold+'/'+'dem.tif')
 tc.jmax,tc.imax=dem.shape
 inc=tc.incident(dem,el,az,30.0,30.0)
@@ -80,12 +82,19 @@ s_ang=np.load('sangle.npy')
 #---------------------------------
 # SAT Image Input
 #-------------------------------
-#tm1=tc.read_tif('sat1.tif')
-#tm2=tc.read_tif('sat2.tif')
-#tm3=tc.read_tif('sat3.tif')
-tm1=cv2.imread('sat1.tif',0)
-tm2=cv2.imread('sat2.tif',0)
-tm3=cv2.imread('sat3.tif',0)
+if fscene.find('OLI')==-1:
+  tm1=cv2.imread('sat1.tif',0)
+  tm2=cv2.imread('sat2.tif',0)
+  tm3=cv2.imread('sat3.tif',0)
+  tm_list=[tm1,tm2,tm3]
+  num_list=[1,2,3]
+else:
+  tm1=cv2.imread('band1.tif',-1)
+  tm2=cv2.imread('band2.tif',-1)
+  tm3=cv2.imread('band3.tif',-1)
+  tm4=cv2.imread('band4.tif',-1)
+  tm_list=[tm1,tm2,tm3,tm4]
+  num_list=[1,2,3,4]
 
 fname=fun_name[1:]
 f=open(fname+'_1.txt')
@@ -104,10 +113,13 @@ ut.cosb0=np.cos((90.0-el)*np.pi/180)
 print ut.cosb0
 
 nterm=15
-iters=range(itmax)
-### Start Making Function List
-#for band in [1,2,3]:
-for (band,tm) in zip([1,2,3],[tm1,tm2,tm3]):
+iters=range(itmax2)
+
+#------------------------------
+#    Main Processing
+#------------------------------
+#for band in zip([1],[tm1]):
+for (band,tm) in zip(num_list,tm_list):
   print "#### Processing of Band "+str(band)+" ####"
   tmx=gain[band-1]*tm+offset[band-1]
   data=ut.read_data(fname+'_'+str(band)+'.txt',ntau,nhigh,nterm,nsang)
@@ -116,10 +128,12 @@ for (band,tm) in zip([1,2,3],[tm1,tm2,tm3]):
   os.chdir('..')
   os.chdir(fold)
   tau=depth*np.ones(tc.imax*tc.jmax).reshape(tc.jmax,tc.imax)
-  taux0=depth*np.ones(tc.imax*tc.jmax).reshape(tc.jmax,tc.imax)
+  tau0=depth*np.ones(tc.imax*tc.jmax).reshape(tc.jmax,tc.imax)
   eref=penv[0]*np.ones(tc.imax*tc.jmax).reshape(tc.jmax,tc.imax)
   ref0=penv[0]*np.ones(tc.imax*tc.jmax).reshape(tc.jmax,tc.imax)
   for iter in iters:
+    if iter == itmax:
+      cls=np.load('cls'+str(band)+'.npy')
     print "--- "+str(iter)+ " iteration ---"
     t_ref=np.load('ref'+str(band)+str(iter)+'.npy')
     temp=np.where(t_ref==1.0)

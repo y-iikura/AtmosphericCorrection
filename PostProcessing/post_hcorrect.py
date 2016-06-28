@@ -21,6 +21,7 @@ tmax=float(sys.argv[3])
 print fold,tmax
 
 dem=cv2.imread('DATA/dem.tif',-1)/1000.0
+dem[dem < 0.0]=0.0
 tc.jmax,tc.imax=dem.shape
 imax=tc.imax/2; jmax=tc.jmax/2
 
@@ -28,12 +29,21 @@ imax=tc.imax/2; jmax=tc.jmax/2
 #pwd
 os.chdir(fold)
 
-tm1=np.load('tau1'+num+'x.npy')
-tm2=np.load('tau2'+num+'x.npy')
-tm3=np.load('tau3'+num+'x.npy')
+if fscene.find('OLI') ==-1:
+  tm1=np.load('tau1'+num+'.npy')
+  tm2=np.load('tau2'+num+'.npy')
+  tm3=np.load('tau3'+num+'.npy')
+else:
+  tm1=np.load('tau2'+num+'.npy')
+  tm2=np.load('tau3'+num+'.npy')
+  tm3=np.load('tau4'+num+'.npy')
+
 tm1=tc.hcor(tm1,dem,2.0)
 tm2=tc.hcor(tm2,dem,2.0)
 tm3=tc.hcor(tm3,dem,2.0)
+
+tc.jmax,tc.imax=tm1.shape
+imax=tc.imax/2; jmax=tc.jmax/2
 
 rc1=tc.percent(tm1,0.01,0.98); print rc1 
 rc2=tc.percent(tm2,0.01,0.98); print rc2
@@ -47,6 +57,11 @@ csat[:,:,1]=tc.display0(tm2,imax,jmax,0.0,tmax)
 csat[:,:,2]=tc.display0(tm3,imax,jmax,0.0,tmax)
 #cv2.imshow('tau',csat)
 #cv2.destroyWindow('tau')
-cv2.imwrite('../'+fold+'_tau321z.png',csat)
+
+if fscene.find('OLI') ==-1:
+  cv2.imwrite('../'+fold+'_tau321z.png',csat)
+else:
+  cv2.imwrite('../'+fold+'_tau432z.png',csat)
+
 exit()
 

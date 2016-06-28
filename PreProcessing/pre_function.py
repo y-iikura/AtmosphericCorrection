@@ -45,6 +45,7 @@ gain=tc.read_parm(text,'gain',nband)
 # dem input and calc inc
 os.chdir('DATA')
 dem=cv2.imread('dem.tif',-1)
+dem[dem < 0.0]=0.0
 #dem=tc.read_tif(fold+'/'+'dem.tif')
 tc.jmax,tc.imax=dem.shape
 inc=tc.incident(dem,el,az,30.0,30.0)
@@ -58,10 +59,19 @@ s_ang=np.load('sangle.npy')
 #tm1=tc.read_tif('sat1.tif')
 #tm2=tc.read_tif('sat2.tif')
 #tm3=tc.read_tif('sat3.tif')
-tm1=cv2.imread('sat1.tif',0)
-tm2=cv2.imread('sat2.tif',0)
-tm3=cv2.imread('sat3.tif',0)
-
+if fold.find('OLI')==-1:
+  tm1=cv2.imread('sat1.tif',0)
+  tm2=cv2.imread('sat2.tif',0)
+  tm3=cv2.imread('sat3.tif',0)
+  tm_list=[tm1,tm2,tm3]
+  num_list=[1,2,3]
+else:
+  tm1=cv2.imread('band1.tif',-1)
+  tm2=cv2.imread('band2.tif',-1)
+  tm3=cv2.imread('band3.tif',-1)
+  tm4=cv2.imread('band4.tif',-1)
+  tm_list=[tm1,tm2,tm3,tm4]
+  num_list=[1,2,3,4]
 
 f=open(fname+'_1.txt')
 lines=f.readlines()
@@ -81,8 +91,7 @@ print ut.cosb0
 nterm=15
 
 ### Start Making Function List
-#for (band,tm) in zip([3],[tm3]):
-for (band,tm) in zip([1,2,3],[tm1,tm2,tm3]):
+for (band,tm) in zip(num_list,tm_list):
   print "#### Processing of Band "+str(band)+" ####"
   data=ut.read_data(fname+'_'+str(band)+'.txt',ntau,nhigh,nterm,nsang)
   ut.set_data(data,ntau,nhigh,nsang)
@@ -94,9 +103,5 @@ for (band,tm) in zip([1,2,3],[tm1,tm2,tm3]):
   print (cv2.getTickCount()-t)/cv2.getTickFrequency()
   np.save('f'+fname+'_'+str(band),f_list)
 
-
 exit()
-'''
 
-exit()
-'''

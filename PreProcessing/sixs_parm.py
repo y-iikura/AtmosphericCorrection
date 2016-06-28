@@ -94,11 +94,14 @@ g.close()
 #if fold.find('ETM')!=-1 : band0=138
 #if fold.find('AVN')!=-1 : band0=166
 # for sixs version SV2.1 & SV2.2=>~/bin/sixsV2.2
+nband=3
 if fold.find('ETM')!=-1 : band0=137
 if fold.find('AVN')!=-1 : band0=200
+if fold.find('OLI')!=-1 : 
+  band0=165
+  nband=4
 
-
-for band in range(3):
+for band in range(nband):
   print '*** band'+str(band+1)+' ***'
   six.change_band('w1.txt','w1x.txt',band+band0)
   fnamex=fname+'_'+str(band+1)+'.txt'

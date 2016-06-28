@@ -43,7 +43,11 @@ az=tc.read_parm(text,'az',1)[0]
 nband=int(tc.read_parm(text,'nband',1)[0])
 offset=tc.read_parm(text,'offset',nband)
 gain=tc.read_parm(text,'gain',nband)
-penv=tc.read_parm(text,'penv',3)
+if fscene.find('OLI') == -1:
+  penv=tc.read_parm(text,'penv',3)
+else:
+  penv=tc.read_parm(text,'penv',4)
+
 depth=tc.read_parm(text,'depth',1)[0]
 wsize=tc.read_parm(text,'wsize',2)
 wsize=[int(x) for x in wsize]
@@ -66,6 +70,8 @@ print ut.t_set
 # dem input and calc inc
 os.chdir('DATA')
 dem=cv2.imread('dem.tif',-1)
+dem[dem < 0.0]=0.0
+
 #dem=tc.read_tif(fold+'/'+'dem.tif')
 tc.jmax,tc.imax=dem.shape
 inc=tc.incident(dem,el,az,30.0,30.0)
@@ -76,7 +82,11 @@ slp=tc.slope(dem,30.0,30.0)
 #------------------------------
 #    Main Processing
 #------------------------------
-for band in [1,2,3]:
+if fscene.find('OLI') == -1:
+  b_list=[1,2,3]
+else:
+  b_list=[1,2,3,4]
+for band in b_list:
   print "#### Processing of Band"+str(band)+" ####"
   # tau-roh function for every pixel
   ut.cosb0=np.cos((90.0-el)*np.pi/180); ut.cosb0
@@ -99,6 +109,7 @@ for band in [1,2,3]:
     temp=np.where(cls==-1)
     print 100.0*len(temp[0])/float(tc.imax*tc.jmax)
   cls=tc.mclass(256*inc,128*slp,256*256*t_ref,nmax)
+  np.save('cls'+str(band),cls)
   iters=np.arange(nend-nstr)+nstr
   for iter in iters:
     print "--- "+str(iter)+ " iteration ---"
@@ -117,8 +128,8 @@ for band in [1,2,3]:
     print " > median filter "
     tau=(1.0-dec)*tau+dec*tc.ymedian(taux,cls,wsize[1],twid[iter])
     temp=np.where(cls==-1) ; print 100.0*len(temp[0])/float(tc.imax*tc.jmax)
-    np.save('tau'+str(band)+str(iter)+'x',taux)
-    np.save('ref'+str(band)+str(iter)+'x',ref)
+    np.save('tau'+str(band)+str(iter),taux)
+    np.save('ref'+str(band)+str(iter),ref)
     #temp=np.where(cls == -1)
     #np.save('cls'+str(band)+str(iter)+'x',temp)
   os.chdir('../DATA')

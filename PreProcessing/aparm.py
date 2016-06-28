@@ -41,6 +41,10 @@ if fold.find('AVN')!=-1 :
   nband=4
   btext='  BAND1 BAND2 BAND3 BAND4\n'
 
+if fold.find('OLI')!=-1 : 
+  nband=8
+  btext='  BAND1 BAND2 BAND3 BAND4 BAND5 BAND6 BAND7 BAND9\n'
+
 offset=ut.read_parm(lines2,'offset=',nband)
 gain=ut.read_parm(lines2,'gain=',nband)
 
@@ -76,9 +80,9 @@ print "* write aparm.txt "
 g=open('aparm.txt','w')
 for line in lines:
   if line.find('el =') != -1:
-    line = '  el =   ' + str(sun_el) +'\n'
+    line = '  el =   ' + format(sun_el,'7.2f') +'\n'
   if line.find('az =') != -1:
-    line = '  az =   ' + str(sun_az) +'\n'
+    line = '  az =   ' + format(sun_az,'7.2f') +'\n'
   if line.find('nband =') != -1:
     line = '  nband =   ' + str(nband) +'\n'
   if line.find('BAND1') != -1:
@@ -93,6 +97,8 @@ for line in lines:
     for i in range(nband):
         line = line + '{0}  '.format(gain[i])
     line = line + '\n'
+  if line.find('penv') != -1 and fscene.find('OLI') != -1 :
+    line = '  penv =   0.06 0.06 0.10 0.06\n'
   #print line
   g.write(line)
 
