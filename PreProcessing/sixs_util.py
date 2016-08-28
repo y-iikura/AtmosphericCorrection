@@ -110,14 +110,10 @@ def read_out(out,check):
         count=count+1
 
 # 5/4/2016
-#def write_param(fin,fout,ref_set,imax,jmax,check):
-def write_param(fin,fout,ref_set,imax,jmax,scale,check):
+def write_param(fin,fout,ref_set,tau,height,scale,check):
     g=open(fout,'w')
-    for i in range(imax):
-        #tau_set=0.1*float(i)
-        tau_set=0.2*float(i)
-        for j in range(jmax):
-            high_set=0.5*float(j)
+    for tau_set in tau:
+        for high_set in height:
             for s in range(smin,smax):
                 ss=s-smin
                 sang_set=float(s)
@@ -128,8 +124,8 @@ def write_param(fin,fout,ref_set,imax,jmax,scale,check):
                 #out=subprocess.check_output("cat temp | sixs2",shell=True)
                 out=subprocess.check_output("cat temp | sixsV2.2",shell=True)
                 read_out(out,check)
-                g.write('******** '+str(i)+' '+str(j)+' '+str(ss)+' ********\n')
-                print ('******** '+str(i)+' '+str(j)+' '+str(ss)+' ********')
+                g.write('****************\n')
+                print ('*'+str(tau_set)+' '+str(high_set)+' '+str(ref_set)+' '+str(sang_set)+'*')
                 g.write(' '+str(tau_set)+' '+str(high_set)+' '+str(ref_set)+' '+str(sang_set)+'\n')
                 line='{0: .2f} {1: .2f} {2: .2f} {3: .2f}'.format(solar,path_rad,back_rad,pixel_rad)
                 line=line+'\n'

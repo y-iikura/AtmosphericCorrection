@@ -32,12 +32,21 @@ f=open('aparm.txt')
 text=f.readlines()
 f.close()
     
-el=tc.read_parm(text,'el',1)[0]
-az=tc.read_parm(text,'az',1)[0]
-nband=int(tc.read_parm(text,'nband',1)[0])
-offset=tc.read_parm(text,'offset',nband)
-gain=tc.read_parm(text,'gain',nband)
+el=tc.read_parm(text,'el')[0]
+az=tc.read_parm(text,'az')[0]
+smin=np.floor(tc.read_parm(text,'min')[0])
+smax=np.ceil(tc.read_parm(text,'max')[0])
+nband=int(tc.read_parm(text,'nband')[0])
+offset=tc.read_parm(text,'offset')
+gain=tc.read_parm(text,'gain')
+number=tc.read_parm(text,'number')
+tau=tc.read_parm(text,'tau')
+height=tc.read_parm(text,'height')
 
+print number
+print tau
+print height
+print int(smin),int(smax)
 
 #------------------------------
 # DEM Input and INC Calculation
@@ -59,12 +68,15 @@ s_ang=np.load('sangle.npy')
 #tm1=tc.read_tif('sat1.tif')
 #tm2=tc.read_tif('sat2.tif')
 #tm3=tc.read_tif('sat3.tif')
-if fold.find('OLI')==-1:
+if fold.find('ETM')==0:
   tm1=cv2.imread('sat1.tif',0)
   tm2=cv2.imread('sat2.tif',0)
   tm3=cv2.imread('sat3.tif',0)
-  tm_list=[tm1,tm2,tm3]
-  num_list=[1,2,3]
+  tm4=cv2.imread('sat4.tif',0)
+  tm5=cv2.imread('sat5.tif',0)
+  tm7=cv2.imread('sat7.tif',0)
+  tm_list=[tm1,tm2,tm3,tm4,tm5,tm7]
+  num_list=[1,2,3,4,5,6]
 else:
   tm1=cv2.imread('band1.tif',-1)
   tm2=cv2.imread('band2.tif',-1)
@@ -73,16 +85,11 @@ else:
   tm_list=[tm1,tm2,tm3,tm4]
   num_list=[1,2,3,4]
 
-f=open(fname+'_1.txt')
-lines=f.readlines()
-f.close()
-n_line=len(lines)
-temp=lines[n_line-5].split()[1:4]
-print temp
-ntau=int(temp[0])+1
-nhigh=int(temp[1])+1
-nsang=int(temp[2])+1
+ntau=len(tau)
+nhigh=len(height)
+nsang=int(smax-smin)+1
 print ntau,nhigh,nsang
+print text[-1]
 #temp=lines[n_line-4].split()[2]
 #ut.r_set0=float(temp)
 ut.cosb0=np.cos((90.0-el)*np.pi/180)
@@ -90,6 +97,7 @@ print ut.cosb0
 
 nterm=15
 
+exit()
 ### Start Making Function List
 for (band,tm) in zip(num_list,tm_list):
   print "#### Processing of Band "+str(band)+" ####"

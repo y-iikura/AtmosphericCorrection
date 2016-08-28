@@ -41,8 +41,8 @@ f=open('aparm.txt')
 text=f.readlines()
 f.close()
     
-el=tc.read_parm(text,'el',1)[0]
-az=tc.read_parm(text,'az',1)[0]
+el=tc.read_parm(text,'el')[0]
+az=tc.read_parm(text,'az')[0]
 
 #------------------------------
 # DEM Input and INC Calculation

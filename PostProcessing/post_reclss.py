@@ -55,9 +55,11 @@ dec=tc.read_parm(text,'dec',1)[0]
 twid=tc.read_parm(text,'twid',15)
 cls_name=text[-1][:-1]
 fun_name=text[-2][:-1]
-ut.r_set0=float(text[-3][:-1])
-ntau,nhigh,nsang=text[-4].split()
-ut.t_set=np.arange(int(ntau))*0.2
+ut.r_set0=float(text[-4][:-1])
+ntau,nhigh,nsang=text[-3].split()
+
+ut.t_set=np.array(tc.read_parm(text,'tau'))
+#ut.t_set=np.arange(int(ntau))*0.2
 
 print cls_name
 print fun_name

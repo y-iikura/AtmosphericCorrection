@@ -14,6 +14,9 @@ f=open('aparm_template.txt')
 lines=f.readlines()
 f.close()
 
+f=open('bparm_template.txt')
+lines3=f.readlines()
+f.close()
 
 os.chdir('..')
 fold=sys.argv[1]
@@ -97,8 +100,8 @@ for line in lines:
     for i in range(nband):
         line = line + '{0}  '.format(gain[i])
     line = line + '\n'
-  if line.find('penv') != -1 and fscene.find('OLI') != -1 :
-    line = '  penv =   0.06 0.06 0.10 0.06\n'
+  if line.find('penv') != -1 and fold.find('OLI') != -1 :
+    line = '  penv =   0.06 0.06 0.06 0.06\n'
   #print line
   g.write(line)
 
@@ -110,6 +113,16 @@ g.write('observation day:\n')
 g.write('  year = '+str(year)+'\n')
 g.write('  mon = '+str(mon)+'\n')
 g.write('  day = '+str(day)+'\n')
+
+for line in lines3:
+   if line.find('tau =')!= -1:
+      ntau=len(line.split())-2
+   if line.find('height =')!= -1:
+      nhigh=len(line.split())-2
+   g.write(line) 
+
+nsang=int(np.ceil(smax)+1)-int(np.floor(smin))
+g.write(str(ntau)+' '+str(nhigh)+' '+str(nsang)+'\n')
 g.close()
 
 exit()

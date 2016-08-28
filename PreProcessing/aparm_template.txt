@@ -11,7 +11,7 @@ calibration:
 median filter for ref & tau:
   wsize =   41   121
 initial ref:
-  penv  =   0.06 0.10 0.06
+  penv  =   0.06 0.06 0.06 0.06 0.06 0.06
 initial depth:
   depth =   0.55
 iteration condition:

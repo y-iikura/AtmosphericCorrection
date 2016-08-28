@@ -16,7 +16,7 @@ os.chdir('..')
 fold=sys.argv[1]
 print "* Target folder : "+fold
 os.chdir(fold+'/DATA')
-if fold.finf('OLI') == -1:
+if fold.find('OLI') == -1:
   tm1=cv2.imread('sat1.tif',0)
   tc.jmax,tc.imax=tm1.shape
   tm2=cv2.imread('sat2.tif',0)
@@ -38,7 +38,7 @@ csat[:,:,1]=tc.display0(tm2,imax,jmax,rc2[0],rc2[1])
 csat[:,:,2]=tc.display0(tm3,imax,jmax,rc3[0],rc3[1])
 #cv2.imshow('ref',csat)
 
-if fold.finf('OLI') == -1:
+if fold.find('OLI') == -1:
   cv2.imwrite('../tm321.png',csat)
 else:
   cv2.imwrite('../oli432.png',csat)
@@ -46,7 +46,7 @@ else:
 
 if fold.find('AVN')!=-1 : exit()
 
-if fold.finf('OLI') == -1:
+if fold.find('OLI') == -1:
   tm4=cv2.imread('sat4.tif',0)
   tm5=cv2.imread('sat5.tif',0)
   tm7=cv2.imread('sat7.tif',0)
@@ -64,10 +64,10 @@ csat2[:,:,1]=tc.display0(tm5,imax,jmax,rc5[0],rc5[1])
 csat2[:,:,2]=tc.display0(tm4,imax,jmax,rc4[0],rc4[1])
 #cv2.imshow('ref2',csat2)
 
-if fold.finf('OLI') == -1:
+if fold.find('OLI') == -1:
   cv2.imwrite('../tm457.png',csat)
 else:
-  cv2.imwrite('../oli5672.png',csat)
+  cv2.imwrite('../oli567.png',csat)
 
 #cv2.destroyWindow('ref')
 

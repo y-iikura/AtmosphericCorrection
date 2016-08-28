@@ -31,10 +31,10 @@ if atype=='Con': type=1
 if atype=='Mar': type=2
 if atype=='Urb': type=3
 
-ref_set=0.3
-imax=int(sys.argv[4])
-jmax=int(sys.argv[5])
-print ref_set,imax,jmax
+#ref_set=0.3
+#imax=int(sys.argv[4])
+#jmax=int(sys.argv[5])
+#print ref_set,imax,jmax
 
 os.chdir('../'+fold)
 
@@ -57,10 +57,22 @@ for line in lines2:
 	mon=int(line.split()[2])
   if line.find('day') == 2:
 	day=int(line.split()[2])
+  if line.find('number') == 2:
+	number=[int(data) for data in line.split()[2:]]
+  if line.find('tau') == 2:
+	tau=[float(data) for data in line.split()[2:]]
+  if line.find('height') == 2:
+	height=[float(data) for data in line.split()[2:]]
   print line,
 
-
+ref_set=float(lines2[-2])
+print ref_set
+print number
+print tau
+print height
 print el,az,smin,smax,sazm,mon,day
+
+#exit()
 
 six.smin=int(np.floor(smin))
 six.smax=int(np.ceil(smax)+1)
@@ -94,18 +106,12 @@ g.close()
 #if fold.find('ETM')!=-1 : band0=138
 #if fold.find('AVN')!=-1 : band0=166
 # for sixs version SV2.1 & SV2.2=>~/bin/sixsV2.2
-nband=3
-if fold.find('ETM')!=-1 : band0=137
-if fold.find('AVN')!=-1 : band0=200
-if fold.find('OLI')!=-1 : 
-  band0=165
-  nband=4
 
-for band in range(nband):
-  print '*** band'+str(band+1)+' ***'
-  six.change_band('w1.txt','w1x.txt',band+band0)
-  fnamex=fname+'_'+str(band+1)+'.txt'
-  six.write_param('w1x.txt',fnamex,ref_set,imax,jmax,scale,0)
+for band in number[3:]:
+  print '*** band'+str(band-number[0]+1)+' ***'
+  six.change_band('w1.txt','w1x.txt',band)
+  fnamex=fname+'_'+str(band-number[0]+1)+'.txt'
+  six.write_param('w1x.txt',fnamex,ref_set,tau,height,scale,0)
 
 exit()
 

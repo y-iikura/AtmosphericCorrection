@@ -6,11 +6,11 @@ import scipy.cluster
 imax=1200
 jmax=1200
 
-def read_parm(text,parm,num):
+def read_parm(text,parm):
     temp=filter(lambda x: x.find(parm)==2,text)
     temp1=temp[0].split()
     temp2=filter(lambda x: x.find("=")!=0,temp1)
-    data=temp2[1:num+1]
+    data=temp2[1:]
     return map(lambda x:float(x),data)
 
 #def read_tif(fname):

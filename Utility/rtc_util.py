@@ -61,6 +61,7 @@ def set_data(data,ntau,nhigh,nsang):
 def reflectance(rad,cosb,t_setx,height,r_setx,s_setx,sang):
     n=len(t_set)    
     ttmp=[x/dtau for x in t_setx]
+    #ttmp=[np.log2(20*x) for x in t_setx]
     htmp=[height/dheight for x in t_setx]
     stmp=[sang-x for x in s_setx]
     path=ndimage.map_coordinates(path_rad,[ttmp,htmp,stmp]).reshape(n,1)
@@ -128,6 +129,7 @@ def mk_ref(jmax,imax,f_list,tau,eref):
         for i in range(imax):
             fref=f_list[j][i]
 	    temp=fref(tau[j,i],eref[j,i])
+	    #temp=fref(np.log2(20*tau[j,i]),eref[j,i])
             if temp < 0.0 : temp = 0.0
             if temp > 1.0 : temp = 1.0
             ref[j,i] = temp
@@ -143,6 +145,7 @@ def mk_tau(jmax,imax,f_list,eref,cref):
         for i in range(imax):
             fref=f_list[j][i]
             res=np.polyfit(x,fref(x,eref[j,i]),3) # 3rd order
+            #res=np.polyfit(x,fref(np.log2(20.0*x),eref[j,i]),3) # 3rd order
 	    taux[j,i]=iestimate(res,cref[j,i])
         #if j % 100 == 0: print i,(cv2.getTickCount()-t)/cv2.getTickFrequency()
     temp=np.where(np.isnan(taux)==True)

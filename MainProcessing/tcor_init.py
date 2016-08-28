@@ -49,20 +49,6 @@ print 'nmax:',nmax
 func_name=sys.argv[2]
 cls_name=sys.argv[3]
 
-os.chdir('DATA')
-f=open(func_name[1:]+'_1.txt')
-lines=f.readlines()
-f.close()
-n_line=len(lines)
-temp=lines[n_line-5].split()[1:4]
-print temp
-ntau=int(temp[0])+1
-nhigh=int(temp[1])+1
-nsang=int(temp[2])+1
-print ntau,nhigh,nsang
-r_set0=lines[n_line-4].split()[2]
-os.chdir('..')
-
 if path.exists(fold) == False:
     line='mkdir '+ fold
     subprocess.call(line,shell=True)
@@ -77,8 +63,8 @@ if path.exists(fold) == False:
             line = '  dec =     ' + str(dec) +'\n'
         print line,
         g.write(line)
-    g.write(str(ntau)+' '+str(nhigh)+' '+str(nsang)+'\n')
-    g.write(r_set0+'\n')
+    #g.write(str(ntau)+' '+str(nhigh)+' '+str(nsang)+'\n')
+    #g.write(r_set0+'\n')
     g.write(func_name+'\n')
     g.write(cls_name+'\n')
     g.close()
