@@ -40,10 +40,15 @@ fold=sys.argv[1]
 subf,tdec=fold.split('_')
 depth=float(subf[3:5])/100
 nmax=int(subf[6:])
-dec=float(tdec)/10.0
+dec=''
+if tdec!='X':
+    dec0=float(tdec)/10.0
+    for i in range(10):
+        dec=dec+' '+str(dec0)
+    print dec
 model=subf[5]
 print 'depth:',depth
-print 'dec:',dec
+#print 'dec:',dec
 print 'nmax:',nmax
 
 func_name=sys.argv[2]
@@ -60,13 +65,14 @@ if path.exists(fold) == False:
         if line.find('depth =') != -1:
             line = '  depth =   ' + str(depth) +'\n'
         if line.find('dec =') != -1:
-            line = '  dec =     ' + str(dec) +'\n'
+            if tdec!='X':
+                line = '  dec = ' + dec +'\n'
         print line,
         g.write(line)
     #g.write(str(ntau)+' '+str(nhigh)+' '+str(nsang)+'\n')
     #g.write(r_set0+'\n')
-    g.write(func_name+'\n')
-    g.write(cls_name+'\n')
+    g.write('function_name: '+func_name+'\n')
+    g.write('class_name: '+cls_name+'\n')
     g.close()
 else: print '*** '+fold+' exists !!!'
 

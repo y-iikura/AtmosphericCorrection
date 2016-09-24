@@ -39,11 +39,12 @@ smax=np.ceil(tc.read_parm(text,'max')[0])
 nband=int(tc.read_parm(text,'nband')[0])
 offset=tc.read_parm(text,'offset')
 gain=tc.read_parm(text,'gain')
-number=tc.read_parm(text,'number')
+#number=tc.read_parm(text,'number')
 tau=tc.read_parm(text,'tau')
 height=tc.read_parm(text,'height')
+nprm=[int(data) for data in tc.read_parm(text,'nprm')]
 
-print number
+#print number
 print tau
 print height
 print int(smin),int(smax)
@@ -89,7 +90,8 @@ ntau=len(tau)
 nhigh=len(height)
 nsang=int(smax-smin)+1
 print ntau,nhigh,nsang
-print text[-1]
+print nprm
+#print text[-1]
 #temp=lines[n_line-4].split()[2]
 #ut.r_set0=float(temp)
 ut.cosb0=np.cos((90.0-el)*np.pi/180)
@@ -97,7 +99,9 @@ print ut.cosb0
 
 nterm=15
 
-exit()
+#exit()
+#tm_list=[tm1]
+#num_list=[1]
 ### Start Making Function List
 for (band,tm) in zip(num_list,tm_list):
   print "#### Processing of Band "+str(band)+" ####"

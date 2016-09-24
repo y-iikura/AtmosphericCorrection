@@ -100,8 +100,8 @@ for line in lines:
     for i in range(nband):
         line = line + '{0}  '.format(gain[i])
     line = line + '\n'
-  if line.find('penv') != -1 and fold.find('OLI') != -1 :
-    line = '  penv =   0.06 0.06 0.06 0.06\n'
+  #if line.find('penv') != -1 and fold.find('OLI') != -1 :
+  # line = '  penv =   0.06 0.06 0.06 0.06\n'
   #print line
   g.write(line)
 
@@ -122,7 +122,8 @@ for line in lines3:
    g.write(line) 
 
 nsang=int(np.ceil(smax)+1)-int(np.floor(smin))
-g.write(str(ntau)+' '+str(nhigh)+' '+str(nsang)+'\n')
+g.write("number of parameter:\n")
+g.write('  nprm = '+str(ntau)+' '+str(nhigh)+' '+str(nsang)+'\n')
 g.close()
 
 exit()

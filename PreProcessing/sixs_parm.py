@@ -63,9 +63,11 @@ for line in lines2:
 	tau=[float(data) for data in line.split()[2:]]
   if line.find('height') == 2:
 	height=[float(data) for data in line.split()[2:]]
+  if line.find('ref') == 2:
+	ref_set=float(line.split()[2])
   print line,
 
-ref_set=float(lines2[-2])
+#ref_set=float(lines2[-2])
 print ref_set
 print number
 print tau
@@ -102,12 +104,15 @@ for line in lines:
 
 g.close()
 
+#exit()
+
 # for sixs version SV1.1 & SV1.2 => ~/bin/sixs2
-#if fold.find('ETM')!=-1 : band0=138
-#if fold.find('AVN')!=-1 : band0=166
+#if fold.find('ETM')!=-1 : band0=137
+#if fold.find('OLI')!=-1 : band0=165
+#if fold.find('AVN')!=-1 : band0=200
 # for sixs version SV2.1 & SV2.2=>~/bin/sixsV2.2
 
-for band in number[3:]:
+for band in number[0:]:
   print '*** band'+str(band-number[0]+1)+' ***'
   six.change_band('w1.txt','w1x.txt',band)
   fnamex=fname+'_'+str(band-number[0]+1)+'.txt'

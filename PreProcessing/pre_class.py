@@ -67,6 +67,7 @@ print np.mean(slp),np.std(slp)
 #-------------------------------
 if fscene.find('ETM')!=-1 : tm=cv2.imread('sat7.tif',0)
 if fscene.find('AVN')!=-1 : tm=cv2.imread('sat4.tif',0)
+if fscene.find('OLI')!=-1 : tm=cv2.imread('sat9.tif',0)
 
 
 jaxa=cv2.imread('jaxa.tif',0)
@@ -77,6 +78,7 @@ print np.mean(jaxa),np.std(jaxa)
 if type=='J':
     cls=tc.mclass(256*inc,256*slp,weight*jaxa,nmax)
 
+# for unfying water region after k-means clustering
 if type=='K':
     cls=tc.mclass(256*inc,256*slp,weight*jaxa,nmax)
     nmax2=np.max(cls)

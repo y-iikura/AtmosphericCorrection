@@ -65,9 +65,9 @@ csat2[:,:,2]=tc.display0(tm4,imax,jmax,rc4[0],rc4[1])
 #cv2.imshow('ref2',csat2)
 
 if fold.find('OLI') == -1:
-  cv2.imwrite('../tm457.png',csat)
+  cv2.imwrite('../tm457.png',csat2)
 else:
-  cv2.imwrite('../oli567.png',csat)
+  cv2.imwrite('../oli567.png',csat2)
 
 #cv2.destroyWindow('ref')
 

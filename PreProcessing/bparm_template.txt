@@ -4,4 +4,5 @@ optical depth:
   tau = 0.0 0.2 0.4 0.6 0.8 1.0 1.2 1.4 1.6 1.8
 surface elevation:
   height = 0.0 0.5 1.0 1.5 2.0 2.5
-0.3
+reflectance setting:
+  ref = 0.3
