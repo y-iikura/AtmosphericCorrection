@@ -18,8 +18,17 @@ os.chdir(fscene)
 fold=sys.argv[1]
 num=sys.argv[2]
 tmax=float(sys.argv[3])
-print fold,tmax
+print fold,num,tmax
 
+f=open(fold +'/aparm.txt')
+text=f.readlines()
+f.close()
+temp=filter(lambda x: x.find('function_name')==0,text)[0]
+fun_name=temp.split()[1]
+mtau=float(fun_name[4:])/10.0
+print fun_name,mtau
+
+#exit()
 dem=cv2.imread('DATA/dem.tif',-1)/1000.0
 dem[dem < 0.0]=0.0
 tc.jmax,tc.imax=dem.shape
@@ -30,17 +39,17 @@ imax=tc.imax/2; jmax=tc.jmax/2
 os.chdir(fold)
 
 if fscene.find('OLI') ==-1:
-  tm1=np.load('tau1'+num+'.npy')
-  tm2=np.load('tau2'+num+'.npy')
-  tm3=np.load('tau3'+num+'.npy')
+  tm1=np.load('xtau1'+num+'.npy')
+  tm2=np.load('xtau2'+num+'.npy')
+  tm3=np.load('xtau3'+num+'.npy')
 else:
-  tm1=np.load('tau2'+num+'.npy')
-  tm2=np.load('tau3'+num+'.npy')
-  tm3=np.load('tau4'+num+'.npy')
+  tm1=np.load('xtau2'+num+'.npy')
+  tm2=np.load('xtau3'+num+'.npy')
+  tm3=np.load('xtau4'+num+'.npy')
 
-tm1=tc.hcor(tm1,dem,2.0)
-tm2=tc.hcor(tm2,dem,2.0)
-tm3=tc.hcor(tm3,dem,2.0)
+tm1=tc.hcor(tm1,dem,mtau)
+tm2=tc.hcor(tm2,dem,mtau)
+tm3=tc.hcor(tm3,dem,mtau)
 
 tc.jmax,tc.imax=tm1.shape
 imax=tc.imax/2; jmax=tc.jmax/2

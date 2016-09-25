@@ -25,13 +25,13 @@ tmax=float(sys.argv[3])
 os.chdir(fold)
 
 if fscene.find('OLI') ==-1:
-  tm1=np.load('ref1'+num+'.npy')
-  tm2=np.load('ref2'+num+'.npy')
-  tm3=np.load('ref3'+num+'.npy')
+  tm1=np.load('xref1'+num+'.npy')
+  tm2=np.load('xref2'+num+'.npy')
+  tm3=np.load('xref3'+num+'.npy')
 else:
-  tm1=np.load('ref2'+num+'.npy')
-  tm2=np.load('ref3'+num+'.npy')
-  tm3=np.load('ref4'+num+'.npy')
+  tm1=np.load('xref2'+num+'.npy')
+  tm2=np.load('xref3'+num+'.npy')
+  tm3=np.load('xref4'+num+'.npy')
 
 tc.jmax,tc.imax=tm1.shape
 imax=tc.imax/2; jmax=tc.jmax/2
@@ -50,13 +50,13 @@ csat[:,:,2]=tc.display0(tm3,imax,jmax,rc3[0],rc3[1])
 #cv2.destroyWindow('ref')
 
 if fscene.find('OLI') ==-1:
-  tm1=np.load('tau1'+num+'.npy')
-  tm2=np.load('tau2'+num+'.npy')
-  tm3=np.load('tau3'+num+'.npy')
+  tm1=np.load('xtau1'+num+'.npy')
+  tm2=np.load('xtau2'+num+'.npy')
+  tm3=np.load('xtau3'+num+'.npy')
 else:
-  tm1=np.load('tau2'+num+'.npy')
-  tm2=np.load('tau3'+num+'.npy')
-  tm3=np.load('tau4'+num+'.npy')
+  tm1=np.load('xtau2'+num+'.npy')
+  tm2=np.load('xtau3'+num+'.npy')
+  tm3=np.load('xtau4'+num+'.npy')
 
 rc1=tc.percent(tm1,0.05,0.98); print rc1 
 rc2=tc.percent(tm2,0.05,0.98); print rc2
@@ -69,11 +69,11 @@ csat2[:,:,2]=tc.display0(tm3,imax,jmax,0.0,tmax)
 #cv2.destroyWindow('tau')
 
 if fscene.find('OLI') ==-1:
-  cv2.imwrite('../'+fold+'_ref321y.png',csat)
-  cv2.imwrite('../'+fold+'_tau321y.png',csat2)
+  cv2.imwrite('../'+fold+'_xref321y.png',csat)
+  cv2.imwrite('../'+fold+'_xtau321y.png',csat2)
 else:
-  cv2.imwrite('../'+fold+'_ref432y.png',csat)
-  cv2.imwrite('../'+fold+'_tau432y.png',csat2)
+  cv2.imwrite('../'+fold+'_xref432y.png',csat)
+  cv2.imwrite('../'+fold+'_xtau432y.png',csat2)
 
 exit()
 

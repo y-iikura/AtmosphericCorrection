@@ -46,14 +46,11 @@ offset=tc.read_parm(text,'offset')
 gain=tc.read_parm(text,'gain')
 nprm=tc.read_parm(text,'nprm')
 ut.r_set0=tc.read_parm(text,'ref')[0]
-if fscene.find('OLI')==-1: 
-  penv=tc.read_parm(text,'penv')
-else:
-  penv=tc.read_parm(text,'penv') 
+penv=tc.read_parm(text,'penv')
 
 depth=tc.read_parm(text,'depth')[0]
-wsize=tc.read_parm(text,'wsize')
-wsize=[int(x) for x in wsize]
+temp=tc.read_parm(text,'wsize')
+wsize=[int(x) for x in temp]
 dec=tc.read_parm(text,'dec')
 twid=tc.read_parm(text,'twid')
 temp=filter(lambda x: x.find('class_name')==0,text)[0]

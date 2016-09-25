@@ -23,41 +23,41 @@ print "#### Initialize ####"
 
 fold=sys.argv[1]
 subf,tdec=fold.split('_')
-depth=float(subf[3:5])/100
+#depth=float(subf[3:5])/100
 nmax=int(subf[6:])
-nstr=int(sys.argv[2])
-nend=int(sys.argv[3])
-dec=float(tdec)/10.0
+itmax=int(sys.argv[2])
+dec=float(sys.argv[4])
 model=subf[5]
-print 'depth:',depth
-print 'dec:',dec
-print 'nmax:',nmax
-print nstr,'-',nend
+#print 'depth:',depth
+#print 'dec:',dec
+#print 'nmax:',nmax
 
 f=open(fold +'/aparm.txt')
 text=f.readlines()
 f.close()
     
-el=tc.read_parm(text,'el',1)[0]
-az=tc.read_parm(text,'az',1)[0]
-nband=int(tc.read_parm(text,'nband',1)[0])
-offset=tc.read_parm(text,'offset',nband)
-gain=tc.read_parm(text,'gain',nband)
-if fscene.find('OLI') == -1:
-  penv=tc.read_parm(text,'penv',3)
-else:
-  penv=tc.read_parm(text,'penv',4)
+el=tc.read_parm(text,'el')[0]
+az=tc.read_parm(text,'az')[0]
+nband=int(tc.read_parm(text,'nband')[0])
+offset=tc.read_parm(text,'offset')
+gain=tc.read_parm(text,'gain')
+nprm=tc.read_parm(text,'nprm')
+ut.r_set0=tc.read_parm(text,'ref')[0]
+penv=tc.read_parm(text,'penv')
 
-depth=tc.read_parm(text,'depth',1)[0]
-wsize=tc.read_parm(text,'wsize',2)
-wsize=[int(x) for x in wsize]
-dec=tc.read_parm(text,'dec',1)[0]
-twid=tc.read_parm(text,'twid',15)
-cls_name=text[-1][:-1]
-fun_name=text[-2][:-1]
-ut.r_set0=float(text[-4][:-1])
-ntau,nhigh,nsang=text[-3].split()
-
+depth=tc.read_parm(text,'depth')[0]
+temp=tc.read_parm(text,'wsize')
+wsize=[int(x) for x in temp]
+#dec=tc.read_parm(text,'dec')
+twid=tc.read_parm(text,'twid')
+temp=filter(lambda x: x.find('class_name')==0,text)[0]
+cls_name=temp.split()[1]
+temp=filter(lambda x: x.find('function_name')==0,text)[0]
+fun_name=temp.split()[1]
+#ntau,nhigh,nsang=text[-3].split()
+ntau=int(nprm[0])
+nhigh=int(nprm[1])
+nsang=int(nprm[2])
 ut.t_set=np.array(tc.read_parm(text,'tau'))
 #ut.t_set=np.arange(int(ntau))*0.2
 
@@ -65,7 +65,8 @@ print cls_name
 print fun_name
 print ut.r_set0
 print ut.t_set
-
+print ntau,nhigh,nsang
+#exit()
 #------------------------------
 # DEM Input and INC Calculation
 #------------------------------
@@ -96,23 +97,14 @@ for band in b_list:
   f_list=np.load(fun_name+'_'+str(band)+'.npy')
   cls=np.load(cls_name+'.npy')
   os.chdir('../'+fold)
-  tau=depth*np.ones(tc.imax*tc.jmax).reshape(tc.jmax,tc.imax)
-  eref=penv[0]*np.ones(tc.imax*tc.jmax).reshape(tc.jmax,tc.imax)
-  for n in range(nstr):
-    print "--- "+str(n)+ " iteration ---"
-    t_ref=np.load('ref'+str(band)+str(n)+'.npy')
-    temp=np.where(t_ref==1.0)
-    cls[temp]=-1
-    eref=(1.0-dec)*eref+dec*tc.xmedian(t_ref,wsize[0])
-    t_taux=np.load('tau'+str(band)+str(n)+'.npy')
-    temp=np.where(t_taux==1.8)
-    cls[temp]=-1
-    tau=(1.0-dec)*tau+dec*tc.ymedian(t_taux,cls,wsize[1],twid[n])
-    temp=np.where(cls==-1)
-    print 100.0*len(temp[0])/float(tc.imax*tc.jmax)
-  cls=tc.mclass(256*inc,128*slp,256*256*t_ref,nmax)
+#  tau=depth*np.ones(tc.imax*tc.jmax).reshape(tc.jmax,tc.imax)
+#  eref=penv[0]*np.ones(tc.imax*tc.jmax).reshape(tc.jmax,tc.imax)
+  tau=np.load('taux'+str(band)+'.npy')
+  eref=np.load('eref'+str(band)+'.npy')
+  ref=np.load('ref'+str(band)+sys.argv[3]+'.npy')
+  cls=tc.mclass(256*inc,128*slp,256*256*ref,nmax)
   np.save('cls'+str(band),cls)
-  iters=np.arange(nend-nstr)+nstr
+  iters=np.arange(itmax)
   for iter in iters:
     print "--- "+str(iter)+ " iteration ---"
     print " > reflectance "
@@ -130,8 +122,8 @@ for band in b_list:
     print " > median filter "
     tau=(1.0-dec)*tau+dec*tc.ymedian(taux,cls,wsize[1],twid[iter])
     temp=np.where(cls==-1) ; print 100.0*len(temp[0])/float(tc.imax*tc.jmax)
-    np.save('tau'+str(band)+str(iter),taux)
-    np.save('ref'+str(band)+str(iter),ref)
+    np.save('xtau'+str(band)+str(iter),taux)
+    np.save('xref'+str(band)+str(iter),ref)
     #temp=np.where(cls == -1)
     #np.save('cls'+str(band)+str(iter)+'x',temp)
   os.chdir('../DATA')
