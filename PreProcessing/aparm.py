@@ -97,7 +97,7 @@ for line in lines:
     for i in range(nband):
         line = line + '{0}  '.format(gain[i])
     line = line + '\n'
-  if line.find('penv') != -1 and fscene.find('OLI') != -1 :
+  if line.find('penv') != -1 and fold.find('OLI') != -1 :
     line = '  penv =   0.06 0.06 0.10 0.06\n'
   #print line
   g.write(line)
